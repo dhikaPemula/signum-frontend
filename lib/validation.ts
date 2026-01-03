@@ -27,8 +27,11 @@ export function validateSkpdForm(data: {
     errors.push({ field: "nama_skpd", message: "Nama SKPD is required" })
   }
 
-  if (data.email && !validateEmail(data.email)) {
-    errors.push({ field: "email", message: "Invalid email format" })
+  if (data.email) {
+    const emailError = validateEmail(data.email)
+    if (emailError) {
+      errors.push(emailError)
+    }
   }
 
   if (data.telepon && data.telepon.length < 10) {

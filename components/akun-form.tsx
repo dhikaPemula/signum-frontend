@@ -47,7 +47,13 @@ export function AkunForm({ editingId, onClose, skpdList }: AkunFormProps) {
           }
 
           const data = response.data as FormData
-          setFormData(data)
+          setFormData({
+            email: data.email ?? "",
+            nama_lengkap: data.nama_lengkap ?? "",
+            role: data.role ?? "operator",
+            skpd_id: data.skpd_id ?? null,
+            is_active: data.is_active ?? true,
+          })
         } catch (err) {
           const errorMessage = err instanceof Error ? err.message : "Gagal mengambil data akun"
           setError(errorMessage)

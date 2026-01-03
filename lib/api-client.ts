@@ -56,6 +56,7 @@ class ApiClient {
     const config: RequestInit = {
       method,
       headers,
+      credentials: 'include',
     }
 
     if (data) {
@@ -63,8 +64,11 @@ class ApiClient {
     }
 
     try {
+      console.log(`[API] ${method} ${url}`, data || '')
       const response = await fetch(url, config)
       const responseData = await response.json()
+      
+      console.log(`[API Response] ${method} ${url}:`, response.status, responseData)
 
       if (!response.ok) {
         throw {
@@ -74,8 +78,13 @@ class ApiClient {
         }
       }
 
-      return responseData
+      // Jika response dari Laravel tidak punya field success, tambahkan otomatis
+      return {
+        success: true,
+        ...responseData
+      }
     } catch (error) {
+      console.error(`[API Error] ${method} ${url}:`, error)
       if (error instanceof Error) {
         throw {
           status: 500,
@@ -88,11 +97,11 @@ class ApiClient {
 
   // AUTH ENDPOINTS
   async login(email: string, password: string) {
-    return this.request("/auth/login", "POST", { email, password })
+    return this.request("POST", "/auth/login", { email, password })
   }
 
   async register(email: string, password: string, nama_lengkap: string, role = "operator") {
-    return this.request("/auth/register", "POST", {
+    return this.request("POST", "/auth/register", {
       email,
       password,
       password_confirmation: password,
@@ -102,74 +111,74 @@ class ApiClient {
   }
 
   async logout() {
-    return this.request("/auth/logout", "POST")
+    return this.request("POST", "/auth/logout", undefined)
   }
 
   async getCurrentUser() {
-    return this.request("/auth/me", "GET")
+    return this.request("GET", "/auth/me", undefined)
   }
 
   // SKPD ENDPOINTS
   async getSKPDList() {
-    return this.request("/skpd", "GET")
+    return this.request("GET", "/skpd", undefined)
   }
 
   async getSKPDById(id: string) {
-    return this.request(`/skpd/${id}`, "GET")
+    return this.request("GET", `/skpd/${id}`, undefined)
   }
 
   async createSKPD(data: unknown) {
-    return this.request("/skpd", "POST", data)
+    return this.request("POST", "/skpd", data)
   }
 
   async updateSKPD(id: string, data: unknown) {
-    return this.request(`/skpd/${id}`, "PUT", data)
+    return this.request("PUT", `/skpd/${id}`, data)
   }
 
   async deleteSKPD(id: string) {
-    return this.request(`/skpd/${id}`, "DELETE")
+    return this.request("DELETE", `/skpd/${id}`, undefined)
   }
 
   // KODEFIKASI ENDPOINTS
   async getKodefikasiList() {
-    return this.request("/kodefikasi", "GET")
+    return this.request("GET", "/kodefikasi", undefined)
   }
 
   async getKodefikasiById(id: string) {
-    return this.request(`/kodefikasi/${id}`, "GET")
+    return this.request("GET", `/kodefikasi/${id}`, undefined)
   }
 
   async createKodefikasi(data: unknown) {
-    return this.request("/kodefikasi", "POST", data)
+    return this.request("POST", "/kodefikasi", data)
   }
 
   async updateKodefikasi(id: string, data: unknown) {
-    return this.request(`/kodefikasi/${id}`, "PUT", data)
+    return this.request("PUT", `/kodefikasi/${id}`, data)
   }
 
   async deleteKodefikasi(id: string) {
-    return this.request(`/kodefikasi/${id}`, "DELETE")
+    return this.request("DELETE", `/kodefikasi/${id}`, undefined)
   }
 
   // AKUN ENDPOINTS
   async getAkunList() {
-    return this.request("/akun", "GET")
+    return this.request("GET", "/akun", undefined)
   }
 
   async getAkunById(id: string) {
-    return this.request(`/akun/${id}`, "GET")
+    return this.request("GET", `/akun/${id}`, undefined)
   }
 
   async createAkun(data: unknown) {
-    return this.request("/akun", "POST", data)
+    return this.request("POST", "/akun", data)
   }
 
   async updateAkun(id: string, data: unknown) {
-    return this.request(`/akun/${id}`, "PUT", data)
+    return this.request("PUT", `/akun/${id}`, data)
   }
 
   async deleteAkun(id: string) {
-    return this.request(`/akun/${id}`, "DELETE")
+    return this.request("DELETE", `/akun/${id}`, undefined)
   }
 }
 

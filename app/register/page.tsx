@@ -53,8 +53,8 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError("")
-    setSuccess("")
+    setError(" ")
+    setSuccess(" ")
 
     if (!validateForm()) {
       return
